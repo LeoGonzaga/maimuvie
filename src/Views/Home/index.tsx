@@ -8,14 +8,24 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Dimensions,
+  Keyboard,
 } from 'react-native';
 import styled from 'styled-components/native';
-import {Container, Title, MoviesContainer} from '../Styles/GlobalStyle';
+import {
+  Container,
+  Title,
+  MoviesContainer,
+  SearchBar,
+  TextSearchBar,
+  ButtonSearchBar,
+} from '../Styles/GlobalStyle';
 
 const Home: React.FC = () => {
   const [movies, setMovies] = useState([{}]);
   const [textMovie, setTextMovie] = useState('');
   const [rst, setRst] = useState(false);
+  const width = Dimensions.get('window');
 
   const getMovies = async () => {
     let response = await fetch(
@@ -53,66 +63,81 @@ const Home: React.FC = () => {
   return (
     <Container>
       <Title>Bem vindo(a), Léo!</Title>
+      <SearchBar>
+        <TextSearchBar
+          placeholder="Pesquise por filmes, séries ou animes"
+          onChangeText={(text) => setTextMovie(text)}
+          onSubmitEditing={() => {
+            searchMovie(textMovie);
+          }}
+        />
+        <ButtonSearchBar
+          onPress={() => {
+            searchMovie(textMovie);
+            Keyboard.dismiss();
+          }}>
+          <Image source={require('../../Assets/search.png')} height={100} />
+        </ButtonSearchBar>
+      </SearchBar>
       <MoviesContainer>
-        <Text>alo</Text>
+        <FlatList
+          data={movies}
+          renderItem={({item}) => (
+            <Item
+              original_title={item.original_title}
+              backdrop_path={item.backdrop_path}
+              overview={item.overview}
+              vote_average={item.vote_average}
+            />
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </MoviesContainer>
     </Container>
   );
 
-  // function Item({original_title, backdrop_path, overview, vote_average}) {
-  //   return (
-  //     <TouchableOpacity>
-  //       <View style={{flex: 1, flexDirection: 'row'}}>
-  //         <Image
-  //           style={{height: 200, width: 140, marginBottom: 10}}
-  //           source={{
-  //             uri: `https://image.tmdb.org/t/p/w500/${backdrop_path}`,
-  //           }}
-  //         />
-  //         <View style={{margin: 10, width: 150, flexDirection: 'column'}}>
-  //           <Text
-  //             numberOfLines={2}
-  //             style={{
-  //               color: 'white',
-  //               fontWeight: 'bold',
-  //               textAlign: 'center',
-  //             }}>
-  //             {original_title}
-  //           </Text>
-  //           <Text
-  //             numberOfLines={5}
-  //             style={{
-  //               padding: 5,
-  //               color: 'white',
-  //               fontSize: 10,
-  //               flexWrap: 'wrap',
-  //               textAlign: 'justify',
-  //             }}>
-  //             {overview}
-  //           </Text>
-
-  //           <View style={{height: 10, marginTop: 10, alignItems: 'center'}}>
-  //             <Text style={{color: '#fff', fontSize: 10}}>Avaliação: 10</Text>
-  //             <Text style={{color: '#fff', fontSize: 10}}>Votos: 10.000</Text>
-  //             <TouchableOpacity
-  //               style={{
-  //                 backgroundColor: '#5953c0',
-  //                 padding: 6,
-  //                 margin: 10,
-  //                 borderRadius: 5,
-  //                 width: 100,
-  //                 alignItems: 'center',
-  //               }}>
-  //               <Text style={{textAlign: 'center', color: '#fff'}}>
-  //                 Favoritar
-  //               </Text>
-  //             </TouchableOpacity>
-  //           </View>
-  //         </View>
-  //       </View>
-  //     </TouchableOpacity>
-  //   );
-  // }
+  function Item({original_title, backdrop_path, overview, vote_average}) {
+    return (
+      <TouchableOpacity>
+        <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
+          <Image
+            style={{
+              height: 136,
+              width: 130,
+              marginBottom: 10,
+              borderRadius: 10,
+            }}
+            source={{
+              uri: `https://image.tmdb.org/t/p/w500/${backdrop_path}`,
+            }}
+          />
+          <View style={{margin: 10, width: 170, flexDirection: 'column'}}>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: '#fb8a00',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                fontSize: 23,
+                textTransform: 'uppercase',
+              }}>
+              {original_title}
+            </Text>
+            <Text
+              numberOfLines={5}
+              style={{
+                flex: 1,
+                color: 'white',
+                fontSize: 10,
+                textAlign: 'justify',
+              }}>
+              {overview}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   // return (
   //   <View
