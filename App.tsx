@@ -32,12 +32,14 @@ export default function App() {
           title: 'Mai Muvie',
 
           headerStyle: {
-            backgroundColor: '#171539',
+            backgroundColor: '#fff',
+            elevation: 0,
           },
-          headerTintColor: '#fff',
+          headerTintColor: '#FB8A00',
           headerTitleStyle: {
             textAlign: 'center',
             alignSelf: 'center',
+            fontWeight: 'bold',
           },
         }}>
         <Stack.Screen name="Home" component={Home} />
